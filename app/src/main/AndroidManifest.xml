@@ -29,7 +29,8 @@
             android:exported="false" />
         <activity
             android:name="ch.zli.pg.app.view.SplashView"
-            android:exported="true">
+            android:exported="true"
+            android:noHistory="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

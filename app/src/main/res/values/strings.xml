@@ -11,4 +11,11 @@
     <string name="scan">Scan</string>
     <string name="qr_code">QR Code</string>
     <string name="select">Select</string>
+    <string name="rescan">Rescan</string>
+    <string name="cancel">Cancel</string>
+    <string name="save">Save</string>
+    <string name="firstname">Firstname:</string>
+    <string name="lastname">Lastname:</string>
+    <string name="number">Number:</string>
+    <string name="is_this_correct">Is this correct?</string>
 </resources>

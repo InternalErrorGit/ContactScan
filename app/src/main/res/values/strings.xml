@@ -1,3 +1,12 @@
 <resources>
     <string name="app_name">ContactScan</string>
+    <string name="title_activity_fullscreen">FullscreenActivity</string>
+    <string name="dummy_button">Dummy Button</string>
+    <string name="dummy_content">DUMMY\nCONTENT</string>
+    <string name="title_activity_splash_view">SplashView</string>
+    <string name="author">Philipp Gatzka</string>
+    <string name="company">ZLI Zürcher Lehrbetriebsverband Informatik</string>
+    <string name="resolving_contacts">Resolving Contacts</string>
+    <string name="share">Share</string>
+    <string name="scan">Scan</string>
 </resources>

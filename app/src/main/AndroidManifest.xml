@@ -10,6 +10,9 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.ContactScan">
         <activity
+            android:name="ch.zli.pg.app.view.ShareView"
+            android:exported="false" />
+        <activity
             android:name="ch.zli.pg.app.view.MenuView"
             android:exported="false" />
         <activity

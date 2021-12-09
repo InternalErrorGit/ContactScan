@@ -1,5 +1,6 @@
 package ch.zli.pg.app.view;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 
@@ -21,7 +22,7 @@ public class MenuView extends AppCompatActivity {
 
 
     public void share(View view) {
-
+        startActivity(new Intent(this, SelectView.class));
     }
 
 }

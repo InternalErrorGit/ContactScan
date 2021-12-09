@@ -1,34 +1,42 @@
 package ch.zli.pg.app.view;
 
 import android.content.ComponentName;
+import android.content.Context;
+import android.content.Intent;
 import android.content.ServiceConnection;
 import android.os.Bundle;
 import android.os.IBinder;
-import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.RecyclerView;
 
+import ch.zli.pg.app.data.ContactModel;
 import ch.zli.pg.app.service.ContactService;
 import ch.zli.pg.contactscan.R;
 
-public class ShareView extends AppCompatActivity {
-
+public class SelectView extends AppCompatActivity {
     private ContactService mService;
-    private boolean bound;
+    private boolean bound = false;
+    private RecyclerView list;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_share_view);
-        int contact_id = getIntent().getIntExtra("contact_id", -1);
-        if (contact_id == -1) {
-            Toast.makeText(getApplicationContext(), "Something went wrong, please try again", Toast.LENGTH_LONG).show();
-        }
-        connectService();
+        setContentView(R.layout.activity_select_view);
+        list = findViewById(R.id.list);
+        bindService();
     }
 
-    private void connectService() {
+    private void bindService() {
+        Intent intent = new Intent(this, ContactService.class);
+        bindService(intent, conn, Context.BIND_AUTO_CREATE);
+    }
 
+    @Override
+    protected void onStop() {
+        super.onStop();
+        if (bound)
+            unbindService(conn);
     }
 
     private final ServiceConnection conn = new ServiceConnection() {
@@ -46,8 +54,14 @@ public class ShareView extends AppCompatActivity {
         }
     };
 
+
     private void onServiceBound() {
+        mService.loadContacts();
+        setItems();
+    }
 
-
+    private void setItems() {
+        bound = false;
+        list.setAdapter(new ContactAdapter(ContactModel.getContacts(), this));
     }
 }

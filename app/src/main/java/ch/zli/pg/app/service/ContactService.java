@@ -10,6 +10,8 @@ import android.os.IBinder;
 import android.provider.ContactsContract;
 import android.util.Log;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Executors;
@@ -17,6 +19,7 @@ import java.util.concurrent.Future;
 
 import ch.zli.pg.app.data.Contact;
 import ch.zli.pg.app.data.ContactDatabase;
+import ch.zli.pg.app.data.ContactModel;
 
 public class ContactService extends Service {
 
@@ -77,6 +80,7 @@ public class ContactService extends Service {
             if (cur != null) {
                 cur.close();
             }
+            db.contactDAO().getAll().forEach(ContactModel::addContact);
             return null;
         };
 
@@ -87,4 +91,18 @@ public class ContactService extends Service {
             e.printStackTrace();
         }
     }
+
+    public List<Contact> getContacts() {
+        Callable<List<Contact>> execution = () -> ContactDatabase.getDatabase(getApplicationContext(), "contacts-database").contactDAO().getAll();
+
+        Future<List<Contact>> future = Executors.newSingleThreadExecutor().submit(execution);
+        try {
+            return future.get();
+        } catch (ExecutionException | InterruptedException e) {
+            e.printStackTrace();
+        }
+        return new ArrayList<>();
+    }
+
+
 }

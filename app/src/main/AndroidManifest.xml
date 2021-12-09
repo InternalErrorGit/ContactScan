@@ -11,7 +11,9 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.ContactScan">
-
+        <activity
+            android:name="ch.zli.pg.app.view.SelectView"
+            android:exported="false" />
 
         <service
             android:name="ch.zli.pg.app.service.ContactService"

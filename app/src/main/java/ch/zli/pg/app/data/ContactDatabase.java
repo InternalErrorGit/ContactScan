@@ -6,7 +6,7 @@ import androidx.room.Database;
 import androidx.room.Room;
 import androidx.room.RoomDatabase;
 
-@Database(entities = {Contact.class}, version = 3)
+@Database(entities = {Contact.class}, version = 3, exportSchema = false)
 public abstract class ContactDatabase extends RoomDatabase {
     public abstract ContactDAO contactDAO();
 
@@ -14,7 +14,7 @@ public abstract class ContactDatabase extends RoomDatabase {
 
     public static ContactDatabase getDatabase(Context context, String databaseName) {
         if (database == null)
-            database = Room.databaseBuilder(context, ContactDatabase.class, databaseName).fallbackToDestructiveMigration().build();
+            database = Room.databaseBuilder(context, ContactDatabase.class, databaseName).allowMainThreadQueries().fallbackToDestructiveMigration().build();
         return database;
     }
 

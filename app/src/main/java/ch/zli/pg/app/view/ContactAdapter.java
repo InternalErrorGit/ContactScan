@@ -2,6 +2,7 @@ package ch.zli.pg.app.view;
 
 import android.content.Context;
 import android.content.Intent;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -35,6 +36,7 @@ public class ContactAdapter extends RecyclerView.Adapter<ContactAdapter.ContactV
     @Override
     public void onBindViewHolder(@NonNull ContactViewHolder holder, int position) {
         Contact contact = contacts.get(position);
+        Log.e("Contact", contact.toString());
         holder.labelName.setText(contact.getName());
         holder.labelNumber.setText(contact.getNumber());
         holder.buttonSelect.setOnClickListener(v -> {

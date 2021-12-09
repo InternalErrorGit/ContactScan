@@ -22,18 +22,32 @@
 
         <activity
             android:name="ch.zli.pg.app.view.CheckView"
-            android:exported="false" />
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+
+                <data android:scheme="http"
+                    android:host="www.createcontact.com"
+                    />
+            </intent-filter>
+        </activity>
         <activity
             android:name="ch.zli.pg.app.view.ShareView"
             android:exported="false" />
         <activity
             android:name="ch.zli.pg.app.view.MenuView"
             android:exported="false" />
+
+
         <activity
             android:name="ch.zli.pg.app.view.SplashView"
             android:exported="true"
             android:noHistory="true">
             <intent-filter>
+
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />

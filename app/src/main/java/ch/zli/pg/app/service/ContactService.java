@@ -5,10 +5,13 @@ import android.app.Service;
 import android.content.ContentResolver;
 import android.content.Intent;
 import android.database.Cursor;
+import android.graphics.Bitmap;
 import android.os.Binder;
 import android.os.IBinder;
 import android.provider.ContactsContract;
 import android.util.Log;
+
+import com.google.zxing.WriterException;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -17,13 +20,31 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 
+import androidmads.library.qrgenearator.QRGContents;
+import androidmads.library.qrgenearator.QRGEncoder;
 import ch.zli.pg.app.data.Contact;
 import ch.zli.pg.app.data.ContactDatabase;
 import ch.zli.pg.app.data.ContactModel;
+import ch.zli.pg.contactscan.R;
 
 public class ContactService extends Service {
 
     private final IBinder binder = new ContactBinder();
+
+    public Bitmap createQRCode(long contact_id) {
+        ContactDatabase db = ContactDatabase.getDatabase(getApplicationContext(), "contacts-database");
+
+        Contact contact = db.contactDAO().getById(contact_id);
+        int d = 300 * 3 / 4;
+        QRGEncoder encoder = new QRGEncoder(getString(R.string.url) + "://www.createcontact.com?name=" + contact.getName() + "&number=" + contact.getNumber(), null, QRGContents.Type.TEXT, d);
+        try {
+            return encoder.encodeAsBitmap();
+        } catch (WriterException e) {
+            e.printStackTrace();
+        }
+        return null;
+
+    }
 
     public class ContactBinder extends Binder {
         public ContactService getService() {
@@ -41,7 +62,7 @@ public class ContactService extends Service {
     public void loadContacts() {
         ContactDatabase db = ContactDatabase.getDatabase(getApplicationContext(), "contacts-database");
 
-        Callable<?> execution = (Callable<?>) () -> {
+        Callable<?> execution = () -> {
             db.contactDAO().deleteAll();
 
             ContentResolver cr = getContentResolver();
@@ -68,10 +89,9 @@ public class ContactService extends Service {
                         while (pCur.moveToNext()) {
                             @SuppressLint("Range") String phoneNo = pCur.getString(pCur.getColumnIndex(
                                     ContactsContract.CommonDataKinds.Phone.NUMBER));
-                            contact.number = phoneNo;
+                            contact.setNumber(phoneNo);
                         }
-                        Log.i("ContactService", name);
-
+                        Log.e("Contact Init", contact.toString());
                         db.contactDAO().insertAll(contact);
                         pCur.close();
                     }

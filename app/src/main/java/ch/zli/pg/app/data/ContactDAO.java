@@ -1,7 +1,6 @@
 package ch.zli.pg.app.data;
 
 import androidx.room.Dao;
-import androidx.room.Delete;
 import androidx.room.Insert;
 import androidx.room.Query;
 
@@ -18,4 +17,7 @@ public interface ContactDAO {
 
     @Query("DELETE FROM contact")
     void deleteAll();
+
+    @Query("SELECT * FROM contact WHERE contact.id == :contact_id")
+    Contact getById(long contact_id);
 }

@@ -18,4 +18,5 @@
     <string name="lastname">Lastname:</string>
     <string name="number">Number:</string>
     <string name="is_this_correct">Is this correct?</string>
+    <string name="url">http</string>
 </resources>

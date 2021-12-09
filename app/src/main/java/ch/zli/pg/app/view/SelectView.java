@@ -56,7 +56,6 @@ public class SelectView extends AppCompatActivity {
 
 
     private void onServiceBound() {
-        mService.loadContacts();
         setItems();
     }
 

@@ -33,10 +33,9 @@ public class ContactService extends Service {
 
     public Bitmap createQRCode(long contact_id) {
         ContactDatabase db = ContactDatabase.getDatabase(getApplicationContext(), "contacts-database");
-
         Contact contact = db.contactDAO().getById(contact_id);
         int d = 300 * 3 / 4;
-        QRGEncoder encoder = new QRGEncoder(getString(R.string.url) + "://www.createcontact.com?name=" + contact.getName() + "&number=" + contact.getNumber(), null, QRGContents.Type.TEXT, d);
+        QRGEncoder encoder = new QRGEncoder(getString(R.string.url) + "://www.createcontact.com?name=" + contact.getName().replace(" ","%20") + "&number=" + contact.getNumber().replace(" ","%space"), null, QRGContents.Type.TEXT, d);
         try {
             return encoder.encodeAsBitmap();
         } catch (WriterException e) {

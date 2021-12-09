@@ -12,6 +12,7 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
 
 import ch.zli.pg.app.service.ContactService;
 import ch.zli.pg.contactscan.R;
@@ -25,17 +26,17 @@ public class SplashView extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_splash_view);
-        requestPermissions(new String[]{Manifest.permission.READ_CONTACTS}, 100);
+        requestPermissions(new String[]{Manifest.permission.READ_CONTACTS,Manifest.permission.WRITE_CONTACTS}, 100);
     }
 
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         if (requestCode == 100) {
-            if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+            if (grantResults[0] == PackageManager.PERMISSION_GRANTED && grantResults[1] == PackageManager.PERMISSION_GRANTED) {
                 bindService();
             } else {
-                Toast.makeText(this, "App not working without permission to read contacts...", Toast.LENGTH_LONG).show();
+                Toast.makeText(this, "App not working without permissions to read and write contacts...", Toast.LENGTH_LONG).show();
             }
         }
     }

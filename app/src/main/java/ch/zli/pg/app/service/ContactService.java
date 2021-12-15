@@ -32,10 +32,9 @@ public class ContactService extends Service {
     private final IBinder binder = new ContactBinder();
 
     public Bitmap createQRCode(long contact_id) {
-        ContactDatabase db = ContactDatabase.getDatabase(getApplicationContext(), "contacts-database");
-        Contact contact = db.contactDAO().getById(contact_id);
+        Contact contact = ContactDatabase.getDatabase(getApplicationContext(), "contacts-database").contactDAO().getById(contact_id);
         int d = 300 * 3 / 4;
-        QRGEncoder encoder = new QRGEncoder(getString(R.string.url) + "://www.createcontact.com?name=" + contact.getName().replace(" ","%20") + "&number=" + contact.getNumber().replace(" ","%space"), null, QRGContents.Type.TEXT, d);
+        QRGEncoder encoder = new QRGEncoder(getString(R.string.url) + "://www.createcontact.com?name=" + contact.getName().replace(" ", "%20") + "&number=" + contact.getNumber().replace(" ", "%space"), null, QRGContents.Type.TEXT, d);
         try {
             return encoder.encodeAsBitmap();
         } catch (WriterException e) {
@@ -61,55 +60,45 @@ public class ContactService extends Service {
     public void loadContacts() {
         ContactDatabase db = ContactDatabase.getDatabase(getApplicationContext(), "contacts-database");
 
-        Callable<?> execution = () -> {
-            db.contactDAO().deleteAll();
+        db.contactDAO().deleteAll();
 
-            ContentResolver cr = getContentResolver();
-            Cursor cur = cr.query(ContactsContract.Contacts.CONTENT_URI,
-                    null, null, null, null);
+        ContentResolver cr = getContentResolver();
+        Cursor cur = cr.query(ContactsContract.Contacts.CONTENT_URI, null, null, null, null);
 
-            if ((cur != null ? cur.getCount() : 0) > 0) {
-                while (cur.moveToNext()) {
-                    Contact contact = new Contact();
-                    @SuppressLint("Range") String id = cur.getString(
-                            cur.getColumnIndex(ContactsContract.Contacts._ID));
-                    @SuppressLint("Range") String name = cur.getString(cur.getColumnIndex(
-                            ContactsContract.Contacts.DISPLAY_NAME));
-                    contact.setName(name);
+        if ((cur != null ? cur.getCount() : 0) > 0) {
+            while (cur.moveToNext()) {
+                Contact contact = new Contact();
+                @SuppressLint("Range") String id = cur.getString(
+                        cur.getColumnIndex(ContactsContract.Contacts._ID));
+                @SuppressLint("Range") String name = cur.getString(cur.getColumnIndex(
+                        ContactsContract.Contacts.DISPLAY_NAME));
+                contact.setName(name);
 
 
-                    if (cur.getInt(cur.getColumnIndex(
-                            ContactsContract.Contacts.HAS_PHONE_NUMBER)) > 0) {
-                        Cursor pCur = cr.query(
-                                ContactsContract.CommonDataKinds.Phone.CONTENT_URI,
-                                null,
-                                ContactsContract.CommonDataKinds.Phone.CONTACT_ID + " = ?",
-                                new String[]{id}, null);
-                        while (pCur.moveToNext()) {
-                            @SuppressLint("Range") String phoneNo = pCur.getString(pCur.getColumnIndex(
-                                    ContactsContract.CommonDataKinds.Phone.NUMBER));
-                            contact.setNumber(phoneNo);
-                        }
-                        Log.e("Contact Init", contact.toString());
-                        db.contactDAO().insertAll(contact);
-                        pCur.close();
+                if (cur.getInt(cur.getColumnIndex(
+                        ContactsContract.Contacts.HAS_PHONE_NUMBER)) > 0) {
+                    Cursor pCur = cr.query(
+                            ContactsContract.CommonDataKinds.Phone.CONTENT_URI,
+                            null,
+                            ContactsContract.CommonDataKinds.Phone.CONTACT_ID + " = ?",
+                            new String[]{id}, null);
+                    while (pCur.moveToNext()) {
+                        @SuppressLint("Range") String phoneNo = pCur.getString(pCur.getColumnIndex(
+                                ContactsContract.CommonDataKinds.Phone.NUMBER));
+                        contact.setNumber(phoneNo);
                     }
+                    Log.e("Contact Init", contact.toString());
+                    db.contactDAO().insertAll(contact);
+                    pCur.close();
                 }
             }
-            if (cur != null) {
-                cur.close();
-            }
-            db.contactDAO().getAll().forEach(ContactModel::addContact);
-            return null;
-        };
-
-        Future<?> future = Executors.newSingleThreadExecutor().submit(execution);
-        try {
-            future.get();
-        } catch (ExecutionException | InterruptedException e) {
-            e.printStackTrace();
         }
+        if (cur != null) {
+            cur.close();
+        }
+        db.contactDAO().getAll().forEach(ContactModel::addContact);
     }
+
 
     public List<Contact> getContacts() {
         Callable<List<Contact>> execution = () -> ContactDatabase.getDatabase(getApplicationContext(), "contacts-database").contactDAO().getAll();

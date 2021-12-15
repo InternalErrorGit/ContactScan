@@ -23,9 +23,8 @@ public class ContactModel {
         getModel().contacts.add(contact);
     }
 
-    public static List<Contact> getContacts(){
+    public static List<Contact> getContacts() {
         return getModel().contacts;
     }
-
 
 }
